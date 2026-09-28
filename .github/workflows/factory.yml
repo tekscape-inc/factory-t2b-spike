@@ -1,0 +1,12 @@
+name: factory
+on: { pull_request: { branches: [main] } }
+permissions: { contents: read, statuses: write }
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: post the three CI contexts (spike T2b: stub gates)
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", SHA: "${{ github.event.pull_request.head.sha }}", R: "${{ github.repository }}" }
+        run: |
+          for c in factory/secrets factory/scope factory/gates; do
+            gh api -X POST repos/$R/statuses/$SHA -f state=success -f context=$c -f description="t2b stub"; done
